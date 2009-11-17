@@ -10,8 +10,9 @@ begin
     gem.email = "divoxx@gmail.com"
     gem.homepage = "http://github.com/divoxx/snmp_manager"
     gem.authors = ["Rodrigo Kochenburger"]
+    gem.add_dependency "racc", ">= 1.4.6"
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "yard", ">= 0"
+    gem.add_development_dependency "yard", ">= 0.4.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new

@@ -4,6 +4,8 @@ require 'snmp_manager'
 require 'spec'
 require 'spec/autorun'
 
+include SNMPManager
+
 Spec::Runner.configure do |config|
-  
+
 end

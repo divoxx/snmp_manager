@@ -1,0 +1,407 @@
+
+
+-------- Grammar --------
+
+rule 1 entries: entries entry
+rule 2 entries: 
+rule 3 entry: rule
+rule 4 entry: variable
+rule 5 variable: IDENTIFIER ":" math_expr NEWLINE
+rule 6 rule: logic_expr ":" STRING NEWLINE
+rule 7 object_ref: IDENTIFIER
+rule 8 object_ref: IDENTIFIER "." NUMBER
+rule 9 math_expr: math_expr math_expr "+"
+rule 10 math_expr: math_expr math_expr "-"
+rule 11 math_expr: math_expr math_expr "/"
+rule 12 math_expr: math_expr math_expr "*"
+rule 13 math_expr: object_ref
+rule 14 logic_expr: math_expr math_expr "<"
+rule 15 logic_expr: math_expr math_expr ">"
+rule 16 logic_expr: math_expr math_expr "<="
+rule 17 logic_expr: math_expr math_expr ">="
+rule 18 logic_expr: math_expr math_expr "=="
+rule 19 logic_expr: math_expr math_expr "!="
+rule 20 logic_expr: logic_expr logic_expr "&"
+rule 21 logic_expr: logic_expr logic_expr "|"
+
+------- Symbols -------
+
+**Nonterminals, with rules where they appear
+
+  $start (20)
+    on right: 
+    on left : 
+  entries (21)
+    on right: 1
+    on left : 1 2
+  entry (22)
+    on right: 1
+    on left : 3 4
+  rule (23)
+    on right: 3
+    on left : 6
+  variable (24)
+    on right: 4
+    on left : 5
+  math_expr (25)
+    on right: 5 9 10 11 12 14 15 16 17 18 19
+    on left : 9 10 11 12 13
+  logic_expr (26)
+    on right: 6 20 21
+    on left : 14 15 16 17 18 19 20 21
+  object_ref (27)
+    on right: 13
+    on left : 7 8
+
+**Terminals, with rules where they appear
+
+  $end (0) 
+  error (1) 
+  "&" (2) 20
+  "|" (3) 21
+  "<" (4) 14
+  ">" (5) 15
+  "<=" (6) 16
+  ">=" (7) 17
+  "==" (8) 18
+  "!=" (9) 19
+  "*" (10) 12
+  "/" (11) 11
+  "+" (12) 9
+  "-" (13) 10
+  IDENTIFIER (14) 5 7 8
+  ":" (15) 5 6
+  NEWLINE (16) 5 6
+  STRING (17) 6
+  "." (18) 8
+  NUMBER (19) 8
+
+--------- State ---------
+
+state 0
+
+
+  $default      reduce using rule 2 (entries)
+
+  entries       go to state 1
+
+state 1
+
+   1) entries : entries _ entry
+
+  $end          shift, and go to state 2
+  IDENTIFIER    shift, and go to state 6
+
+  entry         go to state 3
+  rule          go to state 4
+  variable      go to state 5
+  logic_expr    go to state 7
+  math_expr     go to state 8
+  object_ref    go to state 9
+
+state 2
+
+
+  $end          shift, and go to state 10
+
+
+state 3
+
+   1) entries : entries entry _
+
+  $default      reduce using rule 1 (entries)
+
+
+state 4
+
+   3) entry : rule _
+
+  $default      reduce using rule 3 (entry)
+
+
+state 5
+
+   4) entry : variable _
+
+  $default      reduce using rule 4 (entry)
+
+
+state 6
+
+   5) variable : IDENTIFIER _ ":" math_expr NEWLINE
+   7) object_ref : IDENTIFIER _
+   8) object_ref : IDENTIFIER _ "." NUMBER
+
+  ":"           shift, and go to state 11
+  "."           shift, and go to state 12
+  $default      reduce using rule 7 (object_ref)
+
+
+state 7
+
+   6) rule : logic_expr _ ":" STRING NEWLINE
+  20) logic_expr : logic_expr _ logic_expr "&"
+  21) logic_expr : logic_expr _ logic_expr "|"
+
+  IDENTIFIER    shift, and go to state 14
+  ":"           shift, and go to state 13
+
+  math_expr     go to state 8
+  object_ref    go to state 9
+  logic_expr    go to state 15
+
+state 8
+
+   9) math_expr : math_expr _ math_expr "+"
+  10) math_expr : math_expr _ math_expr "-"
+  11) math_expr : math_expr _ math_expr "/"
+  12) math_expr : math_expr _ math_expr "*"
+  14) logic_expr : math_expr _ math_expr "<"
+  15) logic_expr : math_expr _ math_expr ">"
+  16) logic_expr : math_expr _ math_expr "<="
+  17) logic_expr : math_expr _ math_expr ">="
+  18) logic_expr : math_expr _ math_expr "=="
+  19) logic_expr : math_expr _ math_expr "!="
+
+  IDENTIFIER    shift, and go to state 14
+
+  math_expr     go to state 16
+  object_ref    go to state 9
+
+state 9
+
+  13) math_expr : object_ref _
+
+  $default      reduce using rule 13 (math_expr)
+
+
+state 10
+
+
+  $default      accept
+
+
+state 11
+
+   5) variable : IDENTIFIER ":" _ math_expr NEWLINE
+
+  IDENTIFIER    shift, and go to state 14
+
+  math_expr     go to state 17
+  object_ref    go to state 9
+
+state 12
+
+   8) object_ref : IDENTIFIER "." _ NUMBER
+
+  NUMBER        shift, and go to state 18
+
+
+state 13
+
+   6) rule : logic_expr ":" _ STRING NEWLINE
+
+  STRING        shift, and go to state 19
+
+
+state 14
+
+   7) object_ref : IDENTIFIER _
+   8) object_ref : IDENTIFIER _ "." NUMBER
+
+  "."           shift, and go to state 12
+  $default      reduce using rule 7 (object_ref)
+
+
+state 15
+
+  20) logic_expr : logic_expr _ logic_expr "&"
+  20) logic_expr : logic_expr logic_expr _ "&"
+  21) logic_expr : logic_expr _ logic_expr "|"
+  21) logic_expr : logic_expr logic_expr _ "|"
+
+  "&"           shift, and go to state 20
+  "|"           shift, and go to state 21
+  IDENTIFIER    shift, and go to state 14
+
+  math_expr     go to state 8
+  object_ref    go to state 9
+  logic_expr    go to state 15
+
+state 16
+
+   9) math_expr : math_expr _ math_expr "+"
+   9) math_expr : math_expr math_expr _ "+"
+  10) math_expr : math_expr _ math_expr "-"
+  10) math_expr : math_expr math_expr _ "-"
+  11) math_expr : math_expr _ math_expr "/"
+  11) math_expr : math_expr math_expr _ "/"
+  12) math_expr : math_expr _ math_expr "*"
+  12) math_expr : math_expr math_expr _ "*"
+  14) logic_expr : math_expr math_expr _ "<"
+  15) logic_expr : math_expr math_expr _ ">"
+  16) logic_expr : math_expr math_expr _ "<="
+  17) logic_expr : math_expr math_expr _ ">="
+  18) logic_expr : math_expr math_expr _ "=="
+  19) logic_expr : math_expr math_expr _ "!="
+
+  "<"           shift, and go to state 27
+  ">"           shift, and go to state 28
+  "<="          shift, and go to state 29
+  ">="          shift, and go to state 30
+  "=="          shift, and go to state 31
+  "!="          shift, and go to state 32
+  "*"           shift, and go to state 26
+  "/"           shift, and go to state 25
+  "+"           shift, and go to state 23
+  "-"           shift, and go to state 24
+  IDENTIFIER    shift, and go to state 14
+
+  math_expr     go to state 22
+  object_ref    go to state 9
+
+state 17
+
+   5) variable : IDENTIFIER ":" math_expr _ NEWLINE
+   9) math_expr : math_expr _ math_expr "+"
+  10) math_expr : math_expr _ math_expr "-"
+  11) math_expr : math_expr _ math_expr "/"
+  12) math_expr : math_expr _ math_expr "*"
+
+  IDENTIFIER    shift, and go to state 14
+  NEWLINE       shift, and go to state 33
+
+  math_expr     go to state 22
+  object_ref    go to state 9
+
+state 18
+
+   8) object_ref : IDENTIFIER "." NUMBER _
+
+  $default      reduce using rule 8 (object_ref)
+
+
+state 19
+
+   6) rule : logic_expr ":" STRING _ NEWLINE
+
+  NEWLINE       shift, and go to state 34
+
+
+state 20
+
+  20) logic_expr : logic_expr logic_expr "&" _
+
+  $default      reduce using rule 20 (logic_expr)
+
+
+state 21
+
+  21) logic_expr : logic_expr logic_expr "|" _
+
+  $default      reduce using rule 21 (logic_expr)
+
+
+state 22
+
+   9) math_expr : math_expr _ math_expr "+"
+   9) math_expr : math_expr math_expr _ "+"
+  10) math_expr : math_expr _ math_expr "-"
+  10) math_expr : math_expr math_expr _ "-"
+  11) math_expr : math_expr _ math_expr "/"
+  11) math_expr : math_expr math_expr _ "/"
+  12) math_expr : math_expr _ math_expr "*"
+  12) math_expr : math_expr math_expr _ "*"
+
+  "*"           shift, and go to state 26
+  "/"           shift, and go to state 25
+  "+"           shift, and go to state 23
+  "-"           shift, and go to state 24
+  IDENTIFIER    shift, and go to state 14
+
+  math_expr     go to state 22
+  object_ref    go to state 9
+
+state 23
+
+   9) math_expr : math_expr math_expr "+" _
+
+  $default      reduce using rule 9 (math_expr)
+
+
+state 24
+
+  10) math_expr : math_expr math_expr "-" _
+
+  $default      reduce using rule 10 (math_expr)
+
+
+state 25
+
+  11) math_expr : math_expr math_expr "/" _
+
+  $default      reduce using rule 11 (math_expr)
+
+
+state 26
+
+  12) math_expr : math_expr math_expr "*" _
+
+  $default      reduce using rule 12 (math_expr)
+
+
+state 27
+
+  14) logic_expr : math_expr math_expr "<" _
+
+  $default      reduce using rule 14 (logic_expr)
+
+
+state 28
+
+  15) logic_expr : math_expr math_expr ">" _
+
+  $default      reduce using rule 15 (logic_expr)
+
+
+state 29
+
+  16) logic_expr : math_expr math_expr "<=" _
+
+  $default      reduce using rule 16 (logic_expr)
+
+
+state 30
+
+  17) logic_expr : math_expr math_expr ">=" _
+
+  $default      reduce using rule 17 (logic_expr)
+
+
+state 31
+
+  18) logic_expr : math_expr math_expr "==" _
+
+  $default      reduce using rule 18 (logic_expr)
+
+
+state 32
+
+  19) logic_expr : math_expr math_expr "!=" _
+
+  $default      reduce using rule 19 (logic_expr)
+
+
+state 33
+
+   5) variable : IDENTIFIER ":" math_expr NEWLINE _
+
+  $default      reduce using rule 5 (variable)
+
+
+state 34
+
+   6) rule : logic_expr ":" STRING NEWLINE _
+
+  $default      reduce using rule 6 (rule)
+

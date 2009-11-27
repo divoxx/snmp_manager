@@ -1,3 +1,5 @@
+require 'set'
+
 module SNMPManager
   class StackMachine
     # Creates a new Stack Machine
@@ -29,6 +31,11 @@ module SNMPManager
     end
   
   protected
+    # Loads a object from the memory
+    def op_load(ident)
+      @stack.push(@memory[ident])
+    end
+    
     # Gets a object and transform it in true or false.
     def op_booleanize(a)
       @stack.push(!!a)
@@ -48,22 +55,22 @@ module SNMPManager
     
     # Less than (<) operation.
     def op_lt(a, b)
-      @stack.push(a < b)
+      @stack.push(a.to_i < b.to_i)
     end
     
     # Greater than (>) operation.
     def op_gt(a, b)
-      @stack.push(a > b)
+      @stack.push(a.to_i > b.to_i)
     end
     
     # Less than or equal (<=) operation.
     def op_lte(a, b)
-      @stack.push(a <= b)
+      @stack.push(a.to_i <= b.to_i)
     end
     
     # Greater than or equal (>=) operation.
     def op_gte(a, b)
-      @stack.push(a >= b)
+      @stack.push(a.to_i >= b.to_i)
     end
     
     # Equal operation (==)
@@ -78,22 +85,22 @@ module SNMPManager
     
     # Multiplication operation (*)
     def op_mul(a, b)
-      @stack.push(a * b)
+      @stack.push(a.to_i * b.to_i)
     end
     
     # Division operation (/)
     def op_div(a, b)
-      @stack.push(a / b)
+      @stack.push(a.to_i / b.to_i)
     end
     
     # Add operation (+)
     def op_add(a, b)
-      @stack.push(a + b)
+      @stack.push(a.to_i + b.to_i)
     end
     
     # Subtraction operation (-)
     def op_sub(a, b)
-      @stack.push(a - b)
+      @stack.push(a.to_i - b.to_i)
     end
   end
 end

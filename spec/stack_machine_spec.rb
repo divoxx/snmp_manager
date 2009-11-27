@@ -2,7 +2,8 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe StackMachine do
   before :each do
-    @machine = StackMachine.new
+    @memory  = {}
+    @machine = StackMachine.new(@memory)
   end
 
   describe "AND operation" do
@@ -194,6 +195,22 @@ describe StackMachine do
       @machine.push(4)
       @machine.push(2)
       @machine.calc(:sub).should be(2)
+    end
+  end
+  
+  describe "Program running" do
+    it "should produce proper result" do
+      @memory.merge!(:a => 5, :b => 10, :c => 100)
+      @machine.run([
+        [:push, :a],
+        [:calc, :load],
+        [:push, :b],
+        [:calc, :load],
+        [:calc, :add],
+        [:push, :c],
+        [:calc, :load],
+        [:calc, :mul]
+      ]).should == 1500
     end
   end
 end

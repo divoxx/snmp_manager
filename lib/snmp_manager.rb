@@ -5,4 +5,3 @@ require 'snmp'
 
 require 'snmp_manager/snmp_cached_query'
 require 'snmp_manager/stack_machine'
-require 'snmp_manager/stack_processor'

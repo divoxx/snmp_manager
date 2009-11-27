@@ -108,16 +108,16 @@ racc_token_table = {
   :error => 1,
   :OR => 2,
   :AND => 3,
-  :LES => 4,
-  :GRT => 5,
-  :LES_EQ => 6,
-  :GRT_EQ => 7,
-  :EQUAL => 8,
-  :DIFF => 9,
-  :MULT => 10,
+  :LT => 4,
+  :GT => 5,
+  :LTE => 6,
+  :GTE => 7,
+  :EQ => 8,
+  :NEQ => 9,
+  :MUL => 10,
   :DIV => 11,
-  :PLUS => 12,
-  :MINUS => 13,
+  :ADD => 12,
+  :SUB => 13,
   :NEWLINE => 14,
   :IDENTIFIER => 15,
   ":" => 16,
@@ -150,16 +150,16 @@ Racc_token_to_s_table = [
   "error",
   "OR",
   "AND",
-  "LES",
-  "GRT",
-  "LES_EQ",
-  "GRT_EQ",
-  "EQUAL",
-  "DIFF",
-  "MULT",
+  "LT",
+  "GT",
+  "LTE",
+  "GTE",
+  "EQ",
+  "NEQ",
+  "MUL",
   "DIV",
-  "PLUS",
-  "MINUS",
+  "ADD",
+  "SUB",
   "NEWLINE",
   "IDENTIFIER",
   "\":\"",
@@ -184,7 +184,7 @@ Racc_debug_parser = false
 
 module_eval(<<'.,.,', 'configuration_parser.y', 11)
   def _reduce_2(val, _values, result)
-     @object = Configuration.new 
+     @object = Manager.new 
     result
   end
 .,.,
@@ -197,119 +197,119 @@ module_eval(<<'.,.,', 'configuration_parser.y', 11)
 
 module_eval(<<'.,.,', 'configuration_parser.y', 19)
   def _reduce_6(val, _values, result)
-     @object.define_variable(val[0], &val[2]) 
+     @object.define_variable(val[0], val[2]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 22)
   def _reduce_7(val, _values, result)
-     @object.define_rule(val[2], &val[0]) 
+     @object.define_rule(val[2], val[0]) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 25)
   def _reduce_8(val, _values, result)
-     return lambda { |d| val[0].call(d) / val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :div]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 26)
   def _reduce_9(val, _values, result)
-     return lambda { |d| val[0].call(d) * val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :mul]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 27)
   def _reduce_10(val, _values, result)
-     return lambda { |d| val[0].call(d) + val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :add]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 28)
   def _reduce_11(val, _values, result)
-     return lambda { |d| val[0].call(d) - val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :sub]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 29)
   def _reduce_12(val, _values, result)
-     return lambda { |d| Integer(val[0]) }
+     return [[:push, Integer(val[0])]]         
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 30)
   def _reduce_13(val, _values, result)
-     return lambda { |d| Float(val[0]) }
+     return [[:push, Float(val[0])]]           
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 31)
   def _reduce_14(val, _values, result)
-     return lambda { |d| d[val[0]] }
+     return [[:push, val[0]], [:calc, :load]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 34)
   def _reduce_15(val, _values, result)
-     return lambda { |d| val[0].call(d) && val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :and]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 35)
   def _reduce_16(val, _values, result)
-     return lambda { |d| val[0].call(d) || val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :or]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 36)
   def _reduce_17(val, _values, result)
-     return lambda { |d| val[0].call(d) < val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :lt]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 37)
   def _reduce_18(val, _values, result)
-     return lambda { |d| val[0].call(d) > val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :gt]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 38)
   def _reduce_19(val, _values, result)
-     return lambda { |d| val[0].call(d) <= val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :lte]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 39)
   def _reduce_20(val, _values, result)
-     return lambda { |d| val[0].call(d) >= val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :gte]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 40)
   def _reduce_21(val, _values, result)
-     return lambda { |d| val[0].call(d) == val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :eq]]  
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'configuration_parser.y', 41)
   def _reduce_22(val, _values, result)
-     return lambda { |d| val[0].call(d) != val[1].call(d) }
+     return val[0] + val[1] + [[:calc, :neq]] 
     result
   end
 .,.,

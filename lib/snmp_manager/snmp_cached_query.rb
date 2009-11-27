@@ -4,16 +4,22 @@ module SNMPManager
       @ip        = ip
       @community = community
       @cache     = {}
+      @old_cache = {}
     end
     
     def reload!
-      keys   = @cache.keys.sort
-      values = query(keys)
+      @old_cache = @cache.dup
+      keys       = @cache.keys.sort
+      values     = query(keys)
       keys.each_with_index { |key, i| @cache[key] = values[i] }
     end
     
     def [](object_ref)
-      @cache[object_ref] ||= query(object_ref).first
+      if object_ref =~ /^\$(.*)$/
+        @old_cache[$1] || 0
+      else
+        @cache[object_ref] ||= query(object_ref).first
+      end
     end
     
   protected

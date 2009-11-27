@@ -9,7 +9,7 @@ preclow
 rule
 
   entries         : entries entry
-                  | { @object = Configuration.new } 
+                  | { @object = Manager.new } 
                   ;
                   
   entry           : rule
@@ -17,29 +17,29 @@ rule
                   | NEWLINE
                   ;
                   
-  variable        : IDENTIFIER ':' math_expr NEWLINE { @object.define_variable(val[0], &val[2]) }
+  variable        : IDENTIFIER ':' math_expr NEWLINE { @object.define_variable(val[0], val[2]) }
                   ;
   
-  rule            : logic_expr ':' STRING NEWLINE { @object.define_rule(val[2], &val[0]) }
+  rule            : logic_expr ':' STRING NEWLINE { @object.define_rule(val[2], val[0]) }
                   ;
                   
-  math_expr       : math_expr math_expr DIV   { return lambda { |d| val[0].call(d) / val[1].call(d) }}
-                  | math_expr math_expr MUL   { return lambda { |d| val[0].call(d) * val[1].call(d) }}
-                  | math_expr math_expr ADD   { return lambda { |d| val[0].call(d) + val[1].call(d) }}
-                  | math_expr math_expr SUB   { return lambda { |d| val[0].call(d) - val[1].call(d) }}
-                  | INTEGER                   { return lambda { |d| Integer(val[0]) }}
-                  | FLOAT                     { return lambda { |d| Float(val[0]) }}
-                  | IDENTIFIER                { return lambda { |d| d[val[0]] }}
+  math_expr       : math_expr math_expr DIV   { return val[0] + val[1] + [[:calc, :div]]  }
+                  | math_expr math_expr MUL   { return val[0] + val[1] + [[:calc, :mul]]  }
+                  | math_expr math_expr ADD   { return val[0] + val[1] + [[:calc, :add]]  }
+                  | math_expr math_expr SUB   { return val[0] + val[1] + [[:calc, :sub]]  }
+                  | INTEGER                   { return [[:push, Integer(val[0])]]         }
+                  | FLOAT                     { return [[:push, Float(val[0])]]           }
+                  | IDENTIFIER                { return [[:push, val[0]], [:calc, :load]]  }
                   ;
                   
-  logic_expr      : logic_expr logic_expr AND { return lambda { |d| val[0].call(d) && val[1].call(d) }}
-                  | logic_expr logic_expr OR  { return lambda { |d| val[0].call(d) || val[1].call(d) }}
-                  | math_expr math_expr LT    { return lambda { |d| val[0].call(d) < val[1].call(d) }}
-                  | math_expr math_expr GT    { return lambda { |d| val[0].call(d) > val[1].call(d) }}
-                  | math_expr math_expr LTE   { return lambda { |d| val[0].call(d) <= val[1].call(d) }}
-                  | math_expr math_expr GTE   { return lambda { |d| val[0].call(d) >= val[1].call(d) }}
-                  | math_expr math_expr EQ    { return lambda { |d| val[0].call(d) == val[1].call(d) }}
-                  | math_expr math_expr NEQ   { return lambda { |d| val[0].call(d) != val[1].call(d) }}
+  logic_expr      : logic_expr logic_expr AND { return val[0] + val[1] + [[:calc, :and]] }
+                  | logic_expr logic_expr OR  { return val[0] + val[1] + [[:calc, :or]]  }
+                  | math_expr math_expr LT    { return val[0] + val[1] + [[:calc, :lt]]  }
+                  | math_expr math_expr GT    { return val[0] + val[1] + [[:calc, :gt]]  }
+                  | math_expr math_expr LTE   { return val[0] + val[1] + [[:calc, :lte]] }
+                  | math_expr math_expr GTE   { return val[0] + val[1] + [[:calc, :gte]] }
+                  | math_expr math_expr EQ    { return val[0] + val[1] + [[:calc, :eq]]  }
+                  | math_expr math_expr NEQ   { return val[0] + val[1] + [[:calc, :neq]] }
                   ;
 
 ---- inner ----  

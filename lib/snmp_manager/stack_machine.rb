@@ -4,6 +4,18 @@ module SNMPManager
   class StackMachine
     InstructionSet = Set.new([:push, :pop, :calc]).freeze
     
+    # Runs a program (sequence of instructions)
+    def self.run(program, memory)
+      machine = self.new(memory)
+
+      program.each do |instr, *args|
+        raise ArgumentError, "invalid instruction #{instr}" unless InstructionSet.include?(instr)
+        machine.send(instr, *args)
+      end
+      
+      machine.pop
+    end
+    
     # Creates a new Stack Machine
     def initialize(memory)
       @memory = memory
@@ -29,21 +41,10 @@ module SNMPManager
     end
     
     # Get the object on the top of the stack, accepts a number as argument to get N objects.
-    def pop(n)
-      @stack.pop(n)
+    def pop(*args)
+      @stack.pop(*args)
     end
-    
-    # Runs a program (sequence of instructions)
-    def run(program)
-      program.each do |instr, *args|
-        raise ArgumentError, "invalid instruction #{instr}" unless InstructionSet.include?(instr)
-        send(instr, *args)
-      end
       
-      raise "Program terminated with more than one values on stack" if @stack.length > 1
-      @stack.last
-    end
-  
   protected
     # Loads a object from the memory
     def op_load(ident)

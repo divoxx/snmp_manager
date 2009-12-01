@@ -1,4 +1,4 @@
-$:.unshift File.dirname(__FILE__) + "/../vendor/ruby_snmp/lib"
+$:.unshift File.dirname(__FILE__) + "/../vendor/snmp/lib"
 $:.unshift File.dirname(__FILE__)
 
 require 'snmp'

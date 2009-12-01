@@ -40,8 +40,8 @@ module SNMPManager
           @rules.each do |program, notification_str|
             if StackMachine.run(program, results)
               succeed = false
-              @logger.warn(notification_str)
-              puts notification_str
+              message = "#{host}: #{notification_str}"
+              @logger.warn(message) and puts message
             end
           end
           
